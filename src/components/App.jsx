@@ -27,6 +27,18 @@ const reducer = (state, action) => {
         ...state,
         index: state.index > 0 ? state.index - 1 : state.index,
       };
+    case "newAnswer": {
+      const question = state.questions.at(state.index);
+
+      return {
+        ...state,
+        answer: action.payload.answer,
+        points:
+          action.payload.answer === question.correctOption
+            ? state.points + question.points
+            : state.points,
+      };
+    }
     default:
       throw new Error("Action is unknown");
   }
@@ -37,6 +49,8 @@ const initialState = {
   // 'loading', 'error', 'ready', 'active', 'finished' states
   status: "loading",
   index: 0,
+  answer: null,
+  points: 0,
 };
 
 function App() {
