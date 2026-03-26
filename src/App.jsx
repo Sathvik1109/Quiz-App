@@ -3,6 +3,7 @@ import Main from "./Body";
 import Loader from "./Loader";
 import Error from "./Error";
 import StartScreen from "./StarScreen";
+import Question from "./Question";
 import { useEffect, useReducer } from "react";
 
 const reducer = (state, action) => {
@@ -11,6 +12,8 @@ const reducer = (state, action) => {
       return { ...state, questions: action.payload.data, status: "ready" };
     case "dataFailed":
       return { ...state, status: "error" };
+    case "start":
+      return { ...state, status: "active" };
     default:
       throw new Error("Action is unknown");
   }
@@ -49,7 +52,10 @@ function App() {
       <Main>
         {status === "loading" && <Loader />}
         {status === "error" && <Error />}
-        {status === "ready" && <StartScreen numQuestions={numQuestions} />}
+        {status === "ready" && (
+          <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
+        )}
+        {status === "active" && <Question />}
       </Main>
     </div>
   );
