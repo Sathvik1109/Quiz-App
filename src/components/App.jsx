@@ -14,6 +14,19 @@ const reducer = (state, action) => {
       return { ...state, status: "error" };
     case "start":
       return { ...state, status: "active" };
+    case "indexIncrease":
+      return {
+        ...state,
+        index:
+          state.index < state.questions.length - 1
+            ? state.index + 1
+            : state.index,
+      };
+    case "indexDecrease":
+      return {
+        ...state,
+        index: state.index > 0 ? state.index - 1 : state.index,
+      };
     default:
       throw new Error("Action is unknown");
   }
@@ -23,6 +36,7 @@ const initialState = {
   questions: [],
   // 'loading', 'error', 'ready', 'active', 'finished' states
   status: "loading",
+  index: 0,
 };
 
 function App() {
@@ -36,15 +50,11 @@ function App() {
         const data = await res.json();
         dispatch({ type: "dataReceived", payload: { data: data } });
       } catch (err) {
-        dispatch({ type: "dataFailed" });
+        dispatch({ type: "dataFailed", payload: { error: err } });
       }
     };
     getFetch();
   }, []);
-
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
 
   return (
     <div className="app">
@@ -55,7 +65,7 @@ function App() {
         {status === "ready" && (
           <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
         )}
-        {status === "active" && <Question />}
+        {status === "active" && <Question state={state} dispatch={dispatch} />}
       </Main>
     </div>
   );
