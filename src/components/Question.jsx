@@ -11,26 +11,6 @@ const Question = ({ state, dispatch }) => {
         answer={answer}
         dispatch={dispatch}
       />
-
-      {/* Btns */}
-      <button
-        className="btn"
-        disabled={index === 0}
-        onClick={() => {
-          dispatch({ type: "indexDecrease" });
-        }}
-      >
-        prev
-      </button>
-      <button
-        className="btn"
-        onClick={() => {
-          dispatch({ type: "indexIncrease" });
-        }}
-        disabled={index === questions.length - 1}
-      >
-        next
-      </button>
     </div>
   );
 };
