@@ -6,6 +6,7 @@ import StartScreen from "./StarScreen";
 import Question from "./Question";
 import NextButton from "./NextButton";
 import Progress from "./Progress";
+import FinishedScreen from "./FinishedScreen";
 import { useEffect, useReducer } from "react";
 
 const reducer = (state, action) => {
@@ -96,6 +97,9 @@ function App() {
             <Question state={state} dispatch={dispatch} />
             <NextButton dispatch={dispatch} answer={answer} />
           </>
+        )}
+        {status === "finished" && (
+          <FinishedScreen points={points} maxPoints={totalPoints} />
         )}
       </Main>
     </div>
