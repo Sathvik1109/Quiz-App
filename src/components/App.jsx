@@ -7,7 +7,12 @@ import Question from "./Question";
 import NextButton from "./NextButton";
 import Progress from "./Progress";
 import FinishedScreen from "./FinishedScreen";
+import Timer from "./Timer";
+import Footer from "./Footer";
+
 import { useEffect, useReducer } from "react";
+
+const sec_per_ques = 20;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -18,7 +23,11 @@ const reducer = (state, action) => {
       return { ...state, status: "error" };
 
     case "start":
-      return { ...state, status: "active" };
+      return {
+        ...state,
+        status: "active",
+        timer: state.questions.length * sec_per_ques,
+      };
 
     case "nextQuestion":
       return {
@@ -58,6 +67,13 @@ const reducer = (state, action) => {
         status: "ready",
       };
 
+    case "tick":
+      return {
+        ...state,
+        timer: state.timer - 1,
+        status: state.timer === 0 ? "finished" : state.status,
+      };
+
     default:
       throw new Error("Action is unknown");
   }
@@ -71,11 +87,12 @@ const initialState = {
   answer: null,
   points: 0,
   highscore: 0,
+  timer: null,
 };
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { questions, status, answer, index, points, highscore } = state;
+  const { questions, status, answer, index, points, highscore, timer } = state;
   const numQuestions = questions.length;
   const totalPoints = questions.reduce((curr, acc) => curr + acc.points, 0);
   useEffect(() => {
@@ -111,12 +128,15 @@ function App() {
               answer={answer}
             />
             <Question state={state} dispatch={dispatch} />
-            <NextButton
-              dispatch={dispatch}
-              answer={answer}
-              index={index}
-              numQuestions={numQuestions}
-            />
+            <Footer>
+              <Timer dispatch={dispatch} timer={timer} />
+              <NextButton
+                dispatch={dispatch}
+                answer={answer}
+                index={index}
+                numQuestions={numQuestions}
+              />
+            </Footer>
           </>
         )}
         {status === "finished" && (
